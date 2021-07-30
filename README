@@ -1,1 +1,4 @@
-Testing testing 123
+This is a Tampermonkey script that I made to use for my streams to play music because
+Youtube's shuffler seems pretty broken for playlists with a lot of videos.
+
+I do not recommend that you use it as is as I am currently working on a new refined version with cleaner code.
