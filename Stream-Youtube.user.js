@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Stream Youtube Old
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  try to take over the world!
-// @author       You
-// @match        https://www.youtube.com/*
+// @name         Stream Youtube
+// @namespace    https://github.com/AaronRules5/Youtube-Shuffler/
+// @version      1.0
+// @description  Better youtube shuffler
+// @author       AaronRules5
+// @match        *://*.youtube.com/*
 // @grant        none
 // ==/UserScript==
 
@@ -80,13 +80,22 @@ function clearSuperLog(){
 }
 
 function findVideo(){
-    var ytPL = document.getElementById("playlist");
-    var plContainer = ytPL.children[0].children[1];
+    shuffleMode = 1; //Prevent refire.
     var videoPlayer = document.getElementById("movie_player");
 
-        if ((videoPlayer.getCurrentTime() > (videoPlayer.getDuration() - 1)) && shuffleMode == 0){
-        shuffleMode = 1; //Prevent refire while attempting to find a video.
-        videoPlayer.pauseVideo(); //STOP PLAYING
+    if (videoPlayer){
+    videoPlayer.pauseVideo(); //STOP PLAYING
+    }
+    else{
+    console.log("No videoplayer found?????????? returning false!");
+        return false;
+    }
+
+    console.log("Finding a video...");
+
+    var ytPL = document.getElementById("playlist");
+    var plContainer = ytPL.children[0].children[1];
+
 
         console.log("Video is less than 3 seconds from completing! shuffleMode is SET and I'm pseudorandomly finding a new video...");
 
@@ -109,7 +118,6 @@ function findVideo(){
         console.log("Suitable video candidate found. Clicking...");
         plContainer.children[shuffleResult].children[0].click();
         return true;
-    }
 }
 
 function ytShuffle(){
@@ -146,13 +154,16 @@ function ytShuffle(){
 
     clearSuperLog();
 
+    if ((videoPlayer.getCurrentTime() > (videoPlayer.getDuration() - 1)) && shuffleMode == 0){
     findVideo();
-
+    }
 }
 
 function hidePLInitial(){
     var ytPL = document.getElementById("playlist");
+    var liveChat = document.getElementsByTagName("ytd-live-chat-frame")[0];
     visElement(ytPL,0);
+    visElement(liveChat,0);
 }
 
 function hideTags(){
@@ -169,6 +180,10 @@ function visElement(element,vis){
 }
 
 function togglePlaylist(e){
+    if (e.key == "p" && shuffleMode == 0){
+        console.log("P was pressed and shuffleMode is 0! Finding a new video...");
+        findVideo();
+    }
     if (e.key == "b"){
         var ytPL = document.getElementById("playlist");
     if (ytPL){
@@ -176,6 +191,9 @@ function togglePlaylist(e){
         if (currentVis == -1) currentVis = 1;
         visElement(ytPL,1-currentVis);
     }
+        else{
+        console.log("could not toggle playlist. there is none.")
+        }
     }
     if (e.key == "r"){
     shuffleMode = 0;
